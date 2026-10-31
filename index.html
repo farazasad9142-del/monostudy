@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b1020">
+<meta name="description" content="monostudy — syllabus tracker, PYQ practice, flashcards and analytics for JEE & NEET.">
+<title>monostudy — JEE &amp; NEET Prep</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand" data-go="dashboard"><span class="mark">m</span><span>mono<b class="acc">study</b><small>JEE • NEET • CLASS 11–12</small></span></div>
+    <div class="prof"><div class="avatar" id="sbAvatar">S</div><div><strong id="sbName">Student</strong><small id="sbSub"></small></div></div>
+    <nav class="nav" id="nav"></nav>
+    <small class="note" id="syncNote">Progress is saved in this browser.</small>
+  </aside>
+  <main class="main">
+    <header class="topbar">
+      <button class="ib menu" id="menuBtn" aria-label="Open menu">☰</button>
+      <div class="crumb">monostudy / <strong id="crumb"></strong></div>
+      <div class="top-actions"><span class="chip streak" id="topStreak" title="Study streak"></span><button class="btn sm" id="installBtn" hidden>＋ Install</button></div>
+    </header>
+    <div id="pages"></div>
+    <footer class="footer"><span>© <span id="year"></span> monostudy</span><span>Weightage &amp; frequency bands are provisional estimates.</span></footer>
+  </main>
+</div>
+<nav class="bottom" id="bottomNav" aria-label="Primary"></nav>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="backdrop hidden" id="modal"><div class="modal" role="dialog" aria-modal="true"><h2 id="mTitle"></h2><p class="muted" id="mMsg"></p><div class="row center"><button class="btn" id="mCancel">Cancel</button><button class="btn danger-bg" id="mOk">Confirm</button></div></div></div>
+<script src="app.js"></script>
+</body>
+</html>
