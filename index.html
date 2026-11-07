@@ -8,17 +8,86 @@
 <title>monostudy — JEE &amp; NEET Prep</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
 <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
 </head>
 <body>
+
+<!-- Login & Authentication Screen -->
+<div id="authScreen" class="auth-screen hidden">
+  <div class="auth-card">
+    <div class="brand center-brand">
+      <span class="mark">m</span>
+      <span>mono<b class="acc">study</b><small>JEE • NEET • CLASS 11–12</small></span>
+    </div>
+    <h2 class="auth-title" id="authTitle">Welcome back</h2>
+    <p class="muted auth-sub">Log in to keep your prep separate and sync across devices</p>
+
+    <!-- Social Auth -->
+    <button class="auth-btn google-btn" id="authGoogleBtn">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.7 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.3 9 5 12 5z"/><path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.8z"/><path fill="#FBBC05" d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.3s.2-1.6.4-2.3L1.9 7.3C.7 9.7 0 10.8 0 12.5s.7 2.8 1.9 5.2l3.7-2.9z"/><path fill="#34A853" d="M12 24c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.3-6.4-5.2L1.9 17C3.7 20.7 7.5 24 12 24z"/></svg>
+      Continue with Google
+    </button>
+
+    <div class="auth-divider"><span>OR</span></div>
+
+    <!-- Auth Tabs -->
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabEmailBtn">Email</button>
+      <button class="auth-tab" id="tabPhoneBtn">Mobile No</button>
+    </div>
+
+    <!-- Email Form -->
+    <form id="emailLoginForm" class="auth-form">
+      <div class="form-group hidden" id="nameGroup">
+        <label for="authName">Your name</label>
+        <input type="text" id="authName" placeholder="Aarav" maxlength="40" autocomplete="name">
+      </div>
+      <div class="form-group">
+        <label for="authEmail">Email address</label>
+        <input type="email" id="authEmail" placeholder="student@example.com" required autocomplete="email">
+      </div>
+      <div class="form-group">
+        <label for="authPassword">Password</label>
+        <input type="password" id="authPassword" placeholder="At least 8 characters" required minlength="8" autocomplete="current-password">
+      </div>
+      <p class="auth-error" id="emailErr" role="alert"></p>
+      <button type="submit" class="btn p full-width" id="emailSubmit">Log in</button>
+    </form>
+
+    <!-- Mobile Form -->
+    <form id="phoneLoginForm" class="auth-form hidden">
+      <div class="form-group">
+        <label for="authPhone">Mobile Number</label>
+        <input type="tel" id="authPhone" placeholder="+91 98765 43210" required autocomplete="tel">
+      </div>
+      <div class="form-group hidden" id="otpGroup">
+        <label for="authOtp">Enter the OTP</label>
+        <input type="text" id="authOtp" placeholder="123456" maxlength="6" inputmode="numeric" autocomplete="one-time-code">
+      </div>
+      <p class="auth-error" id="phoneErr" role="alert"></p>
+      <button type="button" class="btn p full-width" id="sendOtpBtn">Send OTP</button>
+      <button type="submit" class="btn p full-width hidden" id="verifyOtpBtn">Verify &amp; Login</button>
+    </form>
+
+    <div class="auth-footer">
+      <button type="button" class="link-btn hidden" id="forgotPw">Forgot password?</button><br><br>
+      <button type="button" class="link-btn" id="toggleRegister">New here? Create an account</button><br><br>
+      <button type="button" class="link-btn" id="guestLoginBtn">Continue as guest</button>
+      <p class="auth-note" id="authMode"></p>
+    </div>
+  </div>
+</div>
+
 <div class="shell">
   <aside class="sidebar" id="sidebar">
     <div class="brand" data-go="dashboard"><span class="mark">m</span><span>mono<b class="acc">study</b><small>JEE • NEET • CLASS 11–12</small></span></div>
     <div class="prof"><div class="avatar" id="sbAvatar">S</div><div><strong id="sbName">Student</strong><small id="sbSub"></small></div></div>
     <nav class="nav" id="nav"></nav>
+    <button class="btn sm danger" id="logoutBtn">Log out</button>
     <small class="note" id="syncNote">Progress is saved in this browser.</small>
   </aside>
   <main class="main">
@@ -32,8 +101,14 @@
   </main>
 </div>
 <nav class="bottom" id="bottomNav" aria-label="Primary"></nav>
+<div id="recaptcha-container"></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div class="backdrop hidden" id="modal"><div class="modal" role="dialog" aria-modal="true"><h2 id="mTitle"></h2><p class="muted" id="mMsg"></p><div class="row center"><button class="btn" id="mCancel">Cancel</button><button class="btn danger-bg" id="mOk">Confirm</button></div></div></div>
+<!-- data ships as plain scripts so the app also works when index.html is opened straight from disk -->
+<script src="firebase-config.js"></script>
+<script src="firebase-layer.js"></script>
+<script src="chapter-data.js"></script>
+<script src="pyq-data.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

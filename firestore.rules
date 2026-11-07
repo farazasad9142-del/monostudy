@@ -1,0 +1,25 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Every user can only touch their own document and its images.
+    match /users/{uid} {
+      allow read, delete: if request.auth != null && request.auth.uid == uid;
+      allow create, update: if request.auth != null && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['schema', 'updatedAt', 'data', 'trimmed'])
+        && request.resource.data.schema == 2
+        && request.resource.data.updatedAt is number
+        && request.resource.data.data is string
+        && request.resource.data.data.size() < 1000000;
+
+      match /images/{imageId} {
+        allow read, delete: if request.auth != null && request.auth.uid == uid;
+        allow create, update: if request.auth != null && request.auth.uid == uid
+          && request.resource.data.keys().hasOnly(['data'])
+          && request.resource.data.data is string
+          && request.resource.data.data.size() < 500000
+          && request.resource.data.data.matches('data:image/.*');
+      }
+    }
+    match /{document=**} { allow read, write: if false; }
+  }
+}
